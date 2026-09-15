@@ -32,7 +32,7 @@ Configuration lives in `.env`:
 |---|---|
 | `overlap` | Changes segment windowing (overlap between consecutive analysis windows). |
 | `sensitivity` | Changes the confidence scores in the response. |
-| `save` | Persists the uploaded file and the JSON response to disk instead of a temp file. |
+| `save` | Persists the uploaded file and the JSON response to disk instead of a temp file — but under `cfg.FILE_STORAGE_PATH` (`/tmp` by default), not the `uploads/` path this repo's compose volume mounts. In this setup those files are not persisted and are lost when the container stops. Not recommended as configured here. |
 | `pmode` | Parsed and validated, but the code path that would use it (pooling per-segment scores into one per-file result) is commented out in `server.py`. No effect on the response. |
 | `lat`, `lon`, `week`, `sf_thresh` | Parsed and validated, but the species-list filtering that would use them only exists in a code path (`saveResultFile()`, used for CLI file export) that the API server never calls. No effect on the response for any `--area`. Separately, this filtering is wired to a bird-only occurrence model, so it would only ever be meaningful for `--area BIRDS`/`CUSTOM_BIRD`, not the bat areas. |
 
