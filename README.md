@@ -23,6 +23,22 @@ Configuration lives in `.env`:
 - `PORT` — host port to publish (default `7667`)
 - `REPO_REF` — upstream git ref to clone at build time (default `main`)
 
+## `meta` field effects
+
+`/analyze`'s `meta` JSON accepts `lat`, `lon`, `week`, `overlap`, `sensitivity`,
+`sf_thresh`, `pmode`, and `save`. Not all of them affect the returned result:
+
+| Field | Effect |
+|---|---|
+| `overlap` | Changes segment windowing (overlap between consecutive analysis windows). |
+| `sensitivity` | Changes the confidence scores in the response. |
+| `save` | Persists the uploaded file and the JSON response to disk instead of a temp file. |
+| `pmode` | Parsed and validated, but the code path that would use it (pooling per-segment scores into one per-file result) is commented out in `server.py`. No effect on the response. |
+| `lat`, `lon`, `week`, `sf_thresh` | Parsed and validated, but the species-list filtering that would use them only exists in a code path (`saveResultFile()`, used for CLI file export) that the API server never calls. No effect on the response for any `--area`. Separately, this filtering is wired to a bird-only occurrence model, so it would only ever be meaningful for `--area BIRDS`/`CUSTOM_BIRD`, not the bat areas. |
+
+`results` in the response is always the full unpooled per-segment breakdown —
+every candidate species per time window, not a single verdict for the file.
+
 ## Modification to upstream
 
 `Dockerfile` patches a bug in upstream's `server.py`: the `--area` validation
