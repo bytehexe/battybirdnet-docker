@@ -1,0 +1,22 @@
+services:
+  battybirdnet:
+    build:
+      context: .
+      args:
+        REPO_REF: ${REPO_REF:-main}
+    image: battybirdnet-analyzer:local
+    ports:
+      - "${PORT:-7667}:7667"
+    command:
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "7667"
+      - "--area"
+      - "${AREA:-EU}"
+    volumes:
+      - uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  uploads:
